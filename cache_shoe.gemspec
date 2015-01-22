@@ -1,11 +1,10 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'cache_shoe/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "cache_shoe"
-  spec.version       = CacheShoe::VERSION
+  spec.version       = "0.0.1"
   spec.authors       = ["Jeff Deville"]
   spec.email         = ["jeffdeville@gmail.com"]
   spec.summary       = %q{TODO: Write a short summary. Required.}
@@ -22,4 +21,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 2.14.1"
   spec.add_development_dependency "rspec-given"
+  spec.add_development_dependency "activesupport"
 end
