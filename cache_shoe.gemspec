@@ -7,9 +7,9 @@ Gem::Specification.new do |spec|
   spec.version       = "0.0.1"
   spec.authors       = ["Jeff Deville"]
   spec.email         = ["jeffdeville@gmail.com"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
-  spec.homepage      = ""
+  spec.summary       = %q{Easily add caching and invalidation to RESTful clients}
+  spec.description   = spec.summary
+  spec.homepage      = "https://github.com/promptworks/cache_shoe"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
