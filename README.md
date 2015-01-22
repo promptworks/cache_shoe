@@ -1,5 +1,6 @@
 # CacheShoe
 [![Build Status](https://travis-ci.org/promptworks/cache_shoe.png?branch=master)](https://travis-ci.org/promptworks/cache_shoe)
+[![Gem Version](https://badge.fury.io/rb/cache_shoe.svg)](http://badge.fury.io/rb/cache_shoe)
 
 TODO: Write a gem description
 
