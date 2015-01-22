@@ -1,4 +1,5 @@
 # CacheShoe
+[![Build Status](https://travis-ci.org/promptworks/cache_shoe.png?branch=master)](https://travis-ci.org/promptworks/cache_shoe)
 
 TODO: Write a gem description
 
