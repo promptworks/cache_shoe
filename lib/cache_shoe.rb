@@ -1,13 +1,9 @@
 require 'logger'
 
+require 'cache_shoe/configuration'
+
 module CacheShoe
   PASS_THROUGH = :_pass_through
-
-  Configuration = Struct.new(:cache, :on_cache, :on_cache_clear, :logger) do
-    def logger
-      @logger ||= Logger.new(StringIO.new)
-    end
-  end
 
   def self.included(base)
     class << base
