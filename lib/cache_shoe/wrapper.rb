@@ -25,17 +25,9 @@ module CacheShoe
       cached_method = method_name
 
       module_instance.send :define_method, cached_method do |*args, &block|
-        class_name = self.class.name
-        key_val = CacheShoe.cache_key(class_name, cached_method, args)
-
-        cache_hit = true
-        result = CacheShoe.cache.fetch(key_val) do
-          cache_hit = false
-          CacheShoe.on_cache_miss key_val
-          Result.new(super(*args, &block))
+        CacheReader.fetch(self, cached_method, args, block) do
+          super(*args, &block)
         end
-        CacheShoe.on_cache_hit(key_val) if cache_hit
-        result.unwrap
       end
     end
 
