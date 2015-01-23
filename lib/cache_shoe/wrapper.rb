@@ -1,17 +1,24 @@
 module CacheShoe
   # Responsible for wrapping methods for caching on the target module
   class Wrapper
-    attr_reader :module_instance, :method_name, :clear_on
+    attr_reader :method_name, :clear_on
 
-    def initialize(module_instance, method_name, clear_on)
-      @module_instance = module_instance
+    def initialize(method_name, clear_on)
       @method_name = method_name
       @clear_on = clear_on
     end
 
-    def create_method_wrappers
+    def module
       wrap_the_method_to_cache
       create_cache_clear_wrapper_methods
+
+      module_instance
+    end
+
+    private
+
+    def module_instance
+      @module_instance ||= Module.new
     end
 
     def wrap_the_method_to_cache
