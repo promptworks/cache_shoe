@@ -36,11 +36,9 @@ module CacheShoe
 
       clear_on.each do |clearing_method, key_extractors|
         module_instance.send :define_method, clearing_method do |*args, &block|
-          class_name = self.class.name
-          CacheShoe.on_cache_clear(
-            class_name, cached_method,
-            clearing_method, key_extractors, *args)
-          super(*args, &block)
+          CacheWriter.fetch(self, cached_method, clearing_method, key_extractors, args, block) do
+            super(*args, &block)
+          end
         end
       end
     end
