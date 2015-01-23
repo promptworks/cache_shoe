@@ -1,7 +1,9 @@
 module CacheShoe
   module Helpers
-    def wrap_the_method_to_cache(method_id)
-      define_method method_id do |*args, &blk|
+    module_function
+
+    def wrap_the_method_to_cache(klass, method_id)
+      klass.send :define_method, method_id do |*args, &blk|
         class_name = self.class.name
         key_val = CacheShoe.cache_key(class_name, method_id, args)
 
@@ -16,9 +18,9 @@ module CacheShoe
       end
     end
 
-    def create_cache_clear_wrapper_methods(cached_method, clear_on)
+    def create_cache_clear_wrapper_methods(klass, cached_method, clear_on)
       clear_on.each do |clearing_method, key_extractors|
-        define_method clearing_method do |*args, &blk|
+        klass.send :define_method, clearing_method do |*args, &blk|
           class_name = self.class.name
           CacheShoe.on_cache_clear(
             class_name, cached_method,

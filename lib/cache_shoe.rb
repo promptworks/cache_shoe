@@ -109,9 +109,8 @@ module CacheShoe
   module ClassMethods
     def cache_method(method_to_cache, clear_on: {})
       dyn_module = Module.new do
-        extend Helpers
-        wrap_the_method_to_cache(method_to_cache)
-        create_cache_clear_wrapper_methods(method_to_cache, clear_on)
+        CacheShoe::Helpers.wrap_the_method_to_cache(self, method_to_cache)
+        CacheShoe::Helpers.create_cache_clear_wrapper_methods(self, method_to_cache, clear_on)
       end
       prepend(dyn_module)
     end
