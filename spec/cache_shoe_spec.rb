@@ -1,6 +1,4 @@
-require 'spec_helper'
-
-describe "when caching a service-style object" do
+RSpec.describe "when caching a service-style object" do
   Given { CacheShoe.config.cache.clear }
   Given(:thing) { Thing.new(123, 'name') }
 
