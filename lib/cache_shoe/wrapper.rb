@@ -25,7 +25,14 @@ module CacheShoe
       cached_method = method_name
 
       module_instance.send :define_method, cached_method do |*args, &block|
-        CacheReader.fetch(self, cached_method, args, block) do
+        scope = Scope.new(
+          object: self,
+          cached_method: cached_method,
+          args: args,
+          block: block
+        )
+
+        Cacher.new(scope).fetch do
           super(*args, &block)
         end
       end
@@ -36,7 +43,16 @@ module CacheShoe
 
       clear_on.each do |clearing_method, key_extractors|
         module_instance.send :define_method, clearing_method do |*args, &block|
-          CacheWriter.fetch(self, cached_method, clearing_method, key_extractors, args, block) do
+          scope = Scope.new(
+            object: self,
+            cached_method: cached_method,
+            clearing_method: clearing_method,
+            key_extractors: key_extractors,
+            args: args,
+            block: block
+          )
+
+          Cacher.new(scope).invalidate do
             super(*args, &block)
           end
         end
