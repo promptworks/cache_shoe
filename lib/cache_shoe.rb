@@ -23,20 +23,6 @@ module CacheShoe
 
   private
 
-  def self.on_cache_hit(key_val)
-    if config.on_cache
-      config.on_cache.call(key_val, :hit)
-    end
-    logger.info "cache hit #{key_val}"
-  end
-
-  def self.on_cache_miss(key_val)
-    if config.on_cache
-      config.on_cache.call(key_val, :miss)
-    end
-    logger.info "cache miss #{key_val}"
-  end
-
   def self.cache
     config.cache
   end

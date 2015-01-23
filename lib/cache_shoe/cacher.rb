@@ -9,12 +9,12 @@ module CacheShoe
 
     def fetch
       cache_hit = true
-      result = CacheShoe.cache.fetch(scope.cache_key) do
+      result = cache.fetch(scope.cache_key) do
         cache_hit = false
-        CacheShoe.on_cache_miss scope.cache_key
+        on_cache_miss scope.cache_key
         Result.new(yield)
       end
-      CacheShoe.on_cache_hit(scope.cache_key) if cache_hit
+      on_cache_hit(scope.cache_key) if cache_hit
       result.unwrap
     end
 
@@ -25,6 +25,20 @@ module CacheShoe
     end
 
     private
+
+    def on_cache_hit(key_val)
+      if config.on_cache
+        config.on_cache.call(key_val, :hit)
+      end
+      logger.info "cache hit #{key_val}"
+    end
+
+    def on_cache_miss(key_val)
+      if config.on_cache
+        config.on_cache.call(key_val, :miss)
+      end
+      logger.info "cache miss #{key_val}"
+    end
 
     def get_cache_args(key_extractor, *args)
       case key_extractor
@@ -46,7 +60,7 @@ module CacheShoe
             config.on_cache_clear.call(
               cached_key, scope.clearing_method)
           end
-          config.cache.delete cached_key
+          cache.delete cached_key
         rescue
           logger.error "Failed to clear cache from #{scope.class_name}." \
             "#{scope.clearing_method}, because the key extractor raised"
@@ -54,12 +68,16 @@ module CacheShoe
       end
     end
 
-    def config
-      CacheShoe.config
+    def cache
+      config.cache
     end
 
     def logger
-      CacheShoe.logger
+      config.logger
+    end
+
+    def config
+      CacheShoe.config
     end
   end
 end
