@@ -30,6 +30,10 @@ module CacheShoe
       ].join("::")
     end
 
+    def key_extractors
+      Array(@key_extractors)
+    end
+
     def digest(a)
       return 'empty' if a.empty?
       resolve_cache_key(a).to_s.downcase

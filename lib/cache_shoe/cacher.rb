@@ -37,7 +37,7 @@ module CacheShoe
     end
 
     def on_cache_clear
-      Array(scope.key_extractors).each do |key_extractor|
+      scope.key_extractors.each do |key_extractor|
         begin
           cache_args = get_cache_args(key_extractor, *(scope.args))
           cached_key = scope.cache_key(cache_args)
