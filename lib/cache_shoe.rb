@@ -1,6 +1,7 @@
 require 'logger'
 
 require 'cache_shoe/configuration'
+require 'cache_shoe/wrapped_result'
 
 module CacheShoe
   PASS_THROUGH = :_pass_through
@@ -85,16 +86,6 @@ module CacheShoe
     config.logger
   end
 
-  # Wrap result in an Array, so that if the cached method returns nil,
-  # that nil will be cached
-  def self.nil_wrapper(value)
-    [value]
-  end
-
-  def self.nil_unwrapper(wrapped_result)
-    wrapped_result.first
-  end
-
   def self.on_cache_clear(
     class_name, cached_method, clearing_method, key_extractors, *args)
     Array(key_extractors).each do |key_extractor|
@@ -126,10 +117,10 @@ module CacheShoe
           result = CacheShoe.cache.fetch(key_val) do
             cache_hit = false
             CacheShoe.on_cache_miss key_val
-            CacheShoe.nil_wrapper super(*args, &blk)
+            WrappedResult.new(super(*args, &blk))
           end
           CacheShoe.on_cache_hit(key_val) if cache_hit
-          CacheShoe.nil_unwrapper result
+          result.unwrap
         end
       end
 
