@@ -19,9 +19,7 @@ module CacheShoe
     end
 
     def invalidate
-      CacheShoe.on_cache_clear(
-        scope.class_name, scope.cached_method,
-        scope.clearing_method, scope.key_extractors, *(scope.args))
+      CacheShoe.on_cache_clear(scope)
 
       yield
     end
