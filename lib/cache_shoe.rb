@@ -1,7 +1,7 @@
 require 'logger'
 
 require 'cache_shoe/configuration'
-require 'cache_shoe/helpers'
+require 'cache_shoe/wrapper'
 require 'cache_shoe/wrapped_result'
 
 module CacheShoe
@@ -107,10 +107,10 @@ module CacheShoe
   end
 
   module ClassMethods
-    def cache_method(method_to_cache, clear_on: {})
+    def cache_method(method_name, clear_on: {})
       dyn_module = Module.new do
-        CacheShoe::Helpers.wrap_the_method_to_cache(self, method_to_cache)
-        CacheShoe::Helpers.create_cache_clear_wrapper_methods(self, method_to_cache, clear_on)
+        CacheShoe::Wrapper.new(self, method_name, clear_on)
+          .create_method_wrappers
       end
       prepend(dyn_module)
     end
