@@ -23,7 +23,7 @@ module CacheShoe
   def self.get_cache_args(key_extractor, *args)
     case key_extractor
     when PASS_THROUGH then args
-    when Proc         then [key_extractor.call(*args)]
+    when Proc         then [key_extractor.call(*args)].flatten
     when Symbol       then [args.first.send(key_extractor)]
     else
       fail "Can't create a cache key from #{key_extractor.inspect}"

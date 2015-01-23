@@ -27,6 +27,20 @@ class BaseServiceExample
   end
 end
 
+class TwoParameterProcExample < BaseServiceExample
+  include CacheShoe
+  cache_method :read, clear_on: {
+    create: lambda do |thing|
+      return thing.id, thing.name
+    end
+  }
+
+  def read(id, name)
+    @read_calls += 1
+    @storage[id]
+  end
+end
+
 class ProcServiceExample < BaseServiceExample
   include CacheShoe
   cache_method :read, clear_on: {

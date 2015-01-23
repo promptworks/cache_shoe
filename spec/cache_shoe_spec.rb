@@ -112,4 +112,15 @@ RSpec.describe "when caching a service-style object" do
     When(:result) { service_ex.create thing }
     Then { service_ex.create_calls == 1 }
   end
+
+  context "when read cache takes multiple parameters" do
+    Given(:service_ex) { TwoParameterProcExample.new }
+    Given { service_ex.read thing.id, thing.name } # cache
+    When(:result) do
+      service_ex.create thing
+      service_ex.read thing.id, thing.name
+    end
+
+    Then { service_ex.read_calls == 2 }
+  end
 end
