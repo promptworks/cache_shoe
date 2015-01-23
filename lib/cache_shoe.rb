@@ -1,8 +1,8 @@
 require 'logger'
 
 require 'cache_shoe/configuration'
+require 'cache_shoe/result'
 require 'cache_shoe/wrapper'
-require 'cache_shoe/wrapped_result'
 
 module CacheShoe
   PASS_THROUGH = :_pass_through

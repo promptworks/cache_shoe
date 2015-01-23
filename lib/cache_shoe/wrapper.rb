@@ -25,7 +25,7 @@ module CacheShoe
         result = CacheShoe.cache.fetch(key_val) do
           cache_hit = false
           CacheShoe.on_cache_miss key_val
-          WrappedResult.new(super(*args, &block))
+          Result.new(super(*args, &block))
         end
         CacheShoe.on_cache_hit(key_val) if cache_hit
         result.unwrap
