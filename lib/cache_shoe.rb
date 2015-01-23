@@ -23,14 +23,6 @@ module CacheShoe
 
   private
 
-  def self.cache
-    config.cache
-  end
-
-  def self.logger
-    config.logger
-  end
-
   module ClassMethods
     def cache_method(method_name, clear_on: {})
       wrapper = CacheShoe::Wrapper.new(method_name, clear_on)
