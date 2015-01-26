@@ -1,6 +1,14 @@
 module CacheShoe
   # Handles cache reads and invalidations
   class Cacher
+    extend Forwardable
+    def_delegators :scope,
+      :args,
+      :cache_key,
+      :class_name,
+      :clearing_method,
+      :key_extractors
+
     attr_reader :scope
 
     def initialize(scope)
@@ -9,26 +17,26 @@ module CacheShoe
 
     def fetch(&block)
       cache_hit = true
-      result = cache.fetch(scope.cache_key) do
+      result = cache.fetch cache_key do
         cache_hit = false
-        on_cache_miss scope.cache_key
+        on_cache_miss cache_key
         Result.new(yield)
       end
-      on_cache_hit(scope.cache_key) if cache_hit
+      on_cache_hit cache_key if cache_hit
       result.unwrap
     end
 
     def invalidate(&block)
-      scope.key_extractors.each do |key_extractor|
+      key_extractors.each do |key_extractor|
         begin
           cache_args = get_cache_args(key_extractor)
-          cached_key = scope.cache_key(cache_args)
+          cached_key = cache_key(cache_args)
           on_cache_clear cached_key
-          logger.info "Clearing cache from #{scope.clearing_method}: #{cached_key}"
+          logger.info "Clearing cache from #{clearing_method}: #{cached_key}"
           cache.delete cached_key
         rescue
-          logger.error "Failed to clear cache from #{scope.class_name}." \
-            "#{scope.clearing_method}, because the key extractor raised"
+          logger.error "Failed to clear cache from #{class_name}." \
+            "#{clearing_method}, because the key extractor raised"
         end
       end
 
@@ -53,9 +61,9 @@ module CacheShoe
 
     def get_cache_args(key_extractor)
       case key_extractor
-      when PASS_THROUGH then scope.args
-      when Proc         then [key_extractor.call(*(scope.args))].flatten
-      when Symbol       then [scope.args.first.send(key_extractor)]
+      when PASS_THROUGH then args
+      when Proc         then [key_extractor.call(*args)].flatten
+      when Symbol       then [args.first.send(key_extractor)]
       else
         fail "Can't create a cache key from #{key_extractor.inspect}"
       end
@@ -64,7 +72,7 @@ module CacheShoe
     def on_cache_clear(cached_key)
       return unless config.on_cache_clear
 
-      config.on_cache_clear.call(cached_key, scope.clearing_method)
+      config.on_cache_clear.call(cached_key, clearing_method)
     end
 
     def cache
