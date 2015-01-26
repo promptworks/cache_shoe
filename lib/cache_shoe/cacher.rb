@@ -19,7 +19,18 @@ module CacheShoe
     end
 
     def invalidate(&block)
-      on_cache_clear
+      scope.key_extractors.each do |key_extractor|
+        begin
+          cache_args = get_cache_args(key_extractor, *(scope.args))
+          cached_key = scope.cache_key(cache_args)
+          on_cache_clear cached_key
+          logger.info "Clearing cache from #{scope.clearing_method}: #{cached_key}"
+          cache.delete cached_key
+        rescue
+          logger.error "Failed to clear cache from #{scope.class_name}." \
+            "#{scope.clearing_method}, because the key extractor raised"
+        end
+      end
 
       yield
     end
@@ -50,22 +61,10 @@ module CacheShoe
       end
     end
 
-    def on_cache_clear
-      scope.key_extractors.each do |key_extractor|
-        begin
-          cache_args = get_cache_args(key_extractor, *(scope.args))
-          cached_key = scope.cache_key(cache_args)
-          logger.info "Clearing cache from #{scope.clearing_method}: #{cached_key}"
-          if config.on_cache_clear
-            config.on_cache_clear.call(
-              cached_key, scope.clearing_method)
-          end
-          cache.delete cached_key
-        rescue
-          logger.error "Failed to clear cache from #{scope.class_name}." \
-            "#{scope.clearing_method}, because the key extractor raised"
-        end
-      end
+    def on_cache_clear(cached_key)
+      return unless config.on_cache_clear
+
+      config.on_cache_clear.call(cached_key, scope.clearing_method)
     end
 
     def cache
