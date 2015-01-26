@@ -7,7 +7,7 @@ module CacheShoe
       @scope = scope
     end
 
-    def fetch
+    def fetch(&block)
       cache_hit = true
       result = cache.fetch(scope.cache_key) do
         cache_hit = false
@@ -18,7 +18,7 @@ module CacheShoe
       result.unwrap
     end
 
-    def invalidate
+    def invalidate(&block)
       on_cache_clear
 
       yield
