@@ -19,10 +19,10 @@ module CacheShoe
       cache_hit = true
       result = cache.fetch cache_key do
         cache_hit = false
-        on_cache_miss cache_key
+        on_cache_miss
         Result.new(yield)
       end
-      on_cache_hit cache_key if cache_hit
+      on_cache_hit if cache_hit
       result.unwrap
     end
 
@@ -45,18 +45,18 @@ module CacheShoe
 
     private
 
-    def on_cache_hit(key_val)
+    def on_cache_hit
       if config.on_cache
-        config.on_cache.call(key_val, :hit)
+        config.on_cache.call(cache_key, :hit)
       end
-      logger.info "cache hit #{key_val}"
+      logger.info "cache hit #{cache_key}"
     end
 
-    def on_cache_miss(key_val)
+    def on_cache_miss
       if config.on_cache
-        config.on_cache.call(key_val, :miss)
+        config.on_cache.call(cache_key, :miss)
       end
-      logger.info "cache miss #{key_val}"
+      logger.info "cache miss #{cache_key}"
     end
 
     def get_cache_args(key_extractor)
