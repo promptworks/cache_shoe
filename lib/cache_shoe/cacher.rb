@@ -21,7 +21,7 @@ module CacheShoe
     def invalidate(&block)
       scope.key_extractors.each do |key_extractor|
         begin
-          cache_args = get_cache_args(key_extractor, *(scope.args))
+          cache_args = get_cache_args(key_extractor)
           cached_key = scope.cache_key(cache_args)
           on_cache_clear cached_key
           logger.info "Clearing cache from #{scope.clearing_method}: #{cached_key}"
@@ -51,11 +51,11 @@ module CacheShoe
       logger.info "cache miss #{key_val}"
     end
 
-    def get_cache_args(key_extractor, *args)
+    def get_cache_args(key_extractor)
       case key_extractor
-      when PASS_THROUGH then args
-      when Proc         then [key_extractor.call(*args)].flatten
-      when Symbol       then [args.first.send(key_extractor)]
+      when PASS_THROUGH then scope.args
+      when Proc         then [key_extractor.call(*(scope.args))].flatten
+      when Symbol       then [scope.args.first.send(key_extractor)]
       else
         fail "Can't create a cache key from #{key_extractor.inspect}"
       end
