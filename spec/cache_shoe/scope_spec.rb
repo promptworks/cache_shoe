@@ -29,6 +29,14 @@ RSpec.describe CacheShoe::Scope do
         )
       end
     end
+
+    context "with upper case arguments" do
+      let(:other_scope) { described_class.new(args: ["ABC"]) }
+
+      it "does not generate the same cache key" do
+        expect(cache_key).to_not eq(other_scope.cache_key)
+      end
+    end
   end
 
   describe "#class_name" do

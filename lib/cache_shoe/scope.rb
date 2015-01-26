@@ -38,7 +38,7 @@ module CacheShoe
 
     def digest(a)
       return 'empty' if a.empty?
-      resolve_cache_key(a).to_s.downcase
+      resolve_cache_key(a).to_s
     end
 
     def resolve_cache_key(obj)
