@@ -24,8 +24,13 @@ module CacheShoe
   private
 
   module ClassMethods
-    def cache_method(method_name, clear_on: {})
-      wrapper = CacheShoe::Wrapper.new(method_name, clear_on)
+    def cache_method(method_name, model: nil, clear_on: {})
+      wrapper = CacheShoe::Wrapper.new(method_name, model, clear_on)
+      prepend wrapper.module
+    end
+
+    def cache_clear(model: nil, clear_on: {})
+      wrapper = CacheShoe::Wrapper.new(nil, model, clear_on)
       prepend wrapper.module
     end
   end

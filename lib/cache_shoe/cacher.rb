@@ -5,7 +5,7 @@ module CacheShoe
     def_delegators :scope,
       :args,
       :cache_key,
-      :class_name,
+      :model_class,
       :clearing_method,
       :key_extractors
 

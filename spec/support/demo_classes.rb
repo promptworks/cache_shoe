@@ -29,7 +29,7 @@ end
 
 class TwoParameterProcExample < BaseServiceExample
   include CacheShoe
-  cache_method :read, clear_on: {
+  cache_method :read, model: Thing, clear_on: {
     create: lambda do |thing|
       return thing.id, thing.name
     end
@@ -43,7 +43,7 @@ end
 
 class ProcServiceExample < BaseServiceExample
   include CacheShoe
-  cache_method :read, clear_on: {
+  cache_method :read, model: Thing, clear_on: {
     create: -> (thing) { thing.id }, delete: -> (id) { id }
   }
 end
@@ -51,7 +51,7 @@ end
 class CacheTwoMethodsExample < BaseServiceExample
   attr_accessor :read_hash_calls
   include CacheShoe
-  cache_method :read, clear_on: {
+  cache_method :read, model: Thing, clear_on: {
     create: -> (thing) { thing.id }, delete: -> (id) { id }
   }
 
@@ -72,12 +72,29 @@ end
 
 class KeyServiceExample < BaseServiceExample
   include CacheShoe
+  cache_method :read, model: Thing, clear_on: { create: :id, delete: PASS_THROUGH }
+end
+
+class DefaultModelServiceExample < BaseServiceExample
+  include CacheShoe
   cache_method :read, clear_on: { create: :id, delete: PASS_THROUGH }
+end
+
+class SeparateCleaningServiceExample
+  extend Forwardable
+  def_delegators :other_service, :delete, :read_calls
+  include CacheShoe
+  attr_accessor :other_service
+  cache_clear model: Thing, clear_on: { delete: PASS_THROUGH }
+
+  def initialize(other_service)
+    self.other_service = other_service
+  end
 end
 
 class MultiKeyClearExample < BaseServiceExample
   include CacheShoe
-  cache_method :read, clear_on: {
+  cache_method :read, model: Thing, clear_on: {
     create: [:id, :name],
     delete: PASS_THROUGH
   }
@@ -92,7 +109,7 @@ end
 
 class BrokenExample < BaseServiceExample
   include CacheShoe
-  cache_method :read, clear_on: {
+  cache_method :read, model: Thing, clear_on: {
     create: -> (_thing) { fail 'I am broken!' }
   }
 end

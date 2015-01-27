@@ -3,8 +3,7 @@ module CacheShoe
   # what to clear
   class Scope
     attr_reader \
-      :object,
-      :cached_method,
+      :model_class,
       :clearing_method,
       :key_extractors,
       :args,
@@ -20,8 +19,7 @@ module CacheShoe
     # any of this for free?
     def cache_key(a = args)
       [
-        class_name,
-        cached_method,
+        model_class.to_s,
         digest(a)
       ].join("::")
     end
