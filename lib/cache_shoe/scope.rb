@@ -24,9 +24,6 @@ module CacheShoe
       ].join("::")
     end
 
-    def class_name
-      object.class.name
-    end
 
     def key_extractors
       Array(@key_extractors)

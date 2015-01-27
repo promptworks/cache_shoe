@@ -2,10 +2,9 @@ RSpec.describe CacheShoe::Scope do
   subject(:scope) { described_class.new(options) }
 
   let(:options) {
-    { object: object, cached_method: cached_method, args: args }
+    { model_class: Object, args: args }
   }
 
-  let(:object) { Object.new }
   let(:cached_method) { :foo }
   let(:args) { ["abc"] }
 
@@ -25,15 +24,9 @@ RSpec.describe CacheShoe::Scope do
 
       it "stringifys each argument" do
         expect(cache_key).to eq(
-          'Object::foo::["first", [2, 3], true, {:fourth=>false, :fifth=>:sym}]'
+          'Object::["first", [2, 3], true, {:fourth=>false, :fifth=>:sym}]'
         )
       end
-    end
-  end
-
-  describe "#class_name" do
-    it "derives from the object" do
-      expect(scope.class_name).to eq("Object")
     end
   end
 

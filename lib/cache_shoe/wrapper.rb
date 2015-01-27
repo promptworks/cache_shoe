@@ -3,20 +3,41 @@ module CacheShoe
   class Wrapper
     attr_reader :method_name, :model, :clear_on
 
-    def initialize(method_name, model, clear_on)
+    def initialize(model: nil, method_name: nil, clear_on: nil)
+      fail 'You must specify a model' if model.nil?
       @method_name = method_name
       @model = model
       @clear_on = clear_on
     end
 
+    def self.cache(model, method_name)
+      fail 'You must specify which method to cache' if method_name.nil?
+      Wrapper.new(model: model, method_name: method_name)
+    end
+
+    def self.clear(model, clear_on)
+      if !clear_on.respond_to?(:key?) || clear_on.length == 0
+        fail 'You must specify the clear_on triggers'
+      end
+      Wrapper.new(model: model, clear_on: clear_on)
+    end
+
     def module
-      wrap_the_method_to_cache if method_name
-      create_cache_clear_wrapper_methods
+      wrap_the_method_to_cache if cache?
+      create_cache_clear_wrapper_methods if clear?
 
       module_instance
     end
 
     private
+
+    def cache?
+      clear_on.nil?
+    end
+
+    def clear?
+      method_name.nil?
+    end
 
     def module_instance
       @module_instance ||= Module.new
