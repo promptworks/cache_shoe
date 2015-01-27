@@ -16,10 +16,6 @@ module CacheShoe
       end
     end
 
-    def class_name
-      object.class.name
-    end
-
     # Any way to delete this?  Does the rails cache give us
     # any of this for free?
     def cache_key(a = args)
@@ -30,9 +26,15 @@ module CacheShoe
       ].join("::")
     end
 
+    def class_name
+      object.class.name
+    end
+
     def key_extractors
       Array(@key_extractors)
     end
+
+    private
 
     def digest(a)
       return 'empty' if a.empty?

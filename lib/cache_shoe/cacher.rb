@@ -34,9 +34,10 @@ module CacheShoe
           on_cache_clear cached_key
           logger.info "Clearing cache from #{clearing_method}: #{cached_key}"
           cache.delete cached_key
-        rescue
+        rescue => error
           logger.error "Failed to clear cache from #{class_name}." \
-            "#{clearing_method}, because the key extractor raised"
+            "#{clearing_method}, because the key extractor raised " \
+            "#{error.inspect}"
         end
       end
 
