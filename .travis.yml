@@ -7,3 +7,6 @@ rvm:
 matrix:
   allow_failures:
     - rvm: ruby-head
+env:
+  global:
+    secure: fhu5ygfEggeJcrOvrpCnOfx9f/2m9Kjdysr4LVweTG5G43qXIqCYLazYJDEyWsfqIFPCqCHSYT7MxfBHCeMriNSEVoBx7lECnLX2+FWojsBtw2xm2rhscVGn5ilDg9sfPQn6aTV9f39Z+qiUjNQ/7PFEegs9AaLrrVnmLA1Ratg=
