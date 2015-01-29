@@ -154,7 +154,7 @@ RSpec.describe 'when caching a service-style object' do
       end
     end
     Then do
-      expect(result).to have_failed(ArgumentError, /You already cached/)
+      expect(result).to have_failed(RuntimeError, /You already cached/)
     end
   end
 end
