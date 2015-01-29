@@ -20,10 +20,10 @@ module CacheShoe
       result = cache.fetch cache_key do
         cache_hit = false
         on_cache_miss
-        Result.new(yield)
+        yield
       end
       on_cache_hit if cache_hit
-      result.unwrap
+      result
     end
 
     def invalidate(&block)
