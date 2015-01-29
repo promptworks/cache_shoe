@@ -1,25 +1,23 @@
 module CacheShoe
   # Responsible for wrapping methods for caching on the target module
   class Wrapper
-    attr_reader :method_name, :model, :clear_on
+    attr_reader :model,:method_name, :clear_on
 
-    def initialize(model: nil, method_name: nil, clear_on: nil)
-      fail 'You must specify a model' if model.nil?
-      @method_name = method_name
+    def initialize(model, method_name: nil, clear_on: nil)
       @model = model
+      @method_name = method_name
       @clear_on = clear_on
     end
 
     def self.cache(model, method_name)
-      fail 'You must specify which method to cache' if method_name.nil?
-      Wrapper.new(model: model, method_name: method_name)
+      new(model, method_name: method_name)
     end
 
     def self.clear(model, clear_on)
       if !clear_on.respond_to?(:key?) || clear_on.length == 0
         fail 'You must specify the clear_on triggers'
       end
-      Wrapper.new(model: model, clear_on: clear_on)
+      new(model, clear_on: clear_on)
     end
 
     def module
@@ -48,7 +46,7 @@ module CacheShoe
       model_class = model
       module_instance.send :define_method, cached_method do |*args, &block|
         scope = Scope.new(
-          model_class: model_class || self.class,
+          model_class: model_class,
           args: args,
           block: block
         )
@@ -63,7 +61,7 @@ module CacheShoe
       clear_on.each do |clearing_method, key_extractors|
         module_instance.send :define_method, clearing_method do |*args, &block|
           scope = Scope.new(
-            model_class: model_class || self.class,
+            model_class: model_class,
             clearing_method: clearing_method,
             key_extractors: key_extractors,
             args: args,
