@@ -144,4 +144,17 @@ RSpec.describe 'when caching a service-style object' do
 
     Then { service_ex.read_calls == 2 }
   end
+
+  context "when a method is cached twice for some dumb reason" do
+    When(:result) do
+      class DoubleRainbow
+        include CacheShoe
+        cache_method Object, :what_does_it_mean
+        cache_method Object, :what_does_it_mean
+      end
+    end
+    Then do
+      expect(result).to have_failed(RuntimeError, /You already cached/)
+    end
+  end
 end

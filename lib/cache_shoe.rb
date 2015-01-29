@@ -1,7 +1,8 @@
 require 'logger'
 
-require 'cache_shoe/configuration'
 require 'cache_shoe/cacher'
+require 'cache_shoe/configuration'
+require 'cache_shoe/registry'
 require 'cache_shoe/scope'
 require 'cache_shoe/wrapper'
 
@@ -24,6 +25,8 @@ module CacheShoe
 
   module ClassMethods
     def cache_method(model, method_name)
+      CacheShoe::Registry.register self, method_name
+
       wrapper = CacheShoe::Wrapper.cache(model, method_name)
       prepend wrapper.module
     end
