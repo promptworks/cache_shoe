@@ -46,7 +46,7 @@ module CacheShoe
       model_class = model
       module_instance.send :define_method, cached_method do |*args, &block|
         scope = Scope.new(
-          model_class: model_class || self.class,
+          model_class: model_class,
           args: args,
           block: block
         )
@@ -61,7 +61,7 @@ module CacheShoe
       clear_on.each do |clearing_method, key_extractors|
         module_instance.send :define_method, clearing_method do |*args, &block|
           scope = Scope.new(
-            model_class: model_class || self.class,
+            model_class: model_class,
             clearing_method: clearing_method,
             key_extractors: key_extractors,
             args: args,
