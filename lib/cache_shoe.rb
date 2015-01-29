@@ -2,7 +2,6 @@ require 'logger'
 
 require 'cache_shoe/configuration'
 require 'cache_shoe/cacher'
-require 'cache_shoe/result'
 require 'cache_shoe/scope'
 require 'cache_shoe/wrapper'
 

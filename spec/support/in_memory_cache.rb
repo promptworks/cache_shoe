@@ -4,8 +4,9 @@ class InMemoryCache
     self.store = {}
   end
 
-  def fetch(key, &blk)
-    store[key] ||= yield
+  def fetch(key, &block)
+    return store[key] if store.has_key?(key)
+    store[key] = yield
   end
 
   def delete(key)
